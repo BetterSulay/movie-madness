@@ -1,3 +1,9 @@
+// let buttons = document.querySelector(`nav ul`);
+
+// buttons.addEventListener(`click`,  (event) => {
+//   console.log(event.target.nodeName);
+// })
+
 fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=5758c30522d298a69bc6c6c5d464365c`)
   .then(resp => {
     if(resp.ok) {
@@ -24,7 +30,6 @@ function getMovieDetails(movies) {
         const array = movies.filter(ele => ele.genre_ids.includes(element.id));
         if(array.length !== 0) {
           let items = addMovieDetails(array);
-          console.log(items);
           addTitledHtml(element.name, items);
         }
       });
