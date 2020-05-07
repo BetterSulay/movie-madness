@@ -1,8 +1,33 @@
-// let buttons = document.querySelector(`nav ul`);
+const buttons = document.querySelector(`nav ul`);
 
-// buttons.addEventListener(`click`,  (event) => {
-//   console.log(event.target.nodeName);
-// })
+buttons.addEventListener(`click`,  (event) => {
+  console.log(event.target.nodeName);
+  event.preventDefault();
+})
+
+const formEle = document.querySelector(`#search`);
+const inputEle = document.querySelector(`#search input`);
+
+inputEle.onkeyup = function(event){
+
+  console.log('onkeyup ' + event.target.value);
+  fetch(`https://api.themoviedb.org/3/search/movie?api_key=5758c30522d298a69bc6c6c5d464365c&query=${event.target.value}`)
+    .then(resp => {
+      if(resp.ok) {
+        return resp.json();
+      } else {
+        throw new Error("Houston, we have a problem.");
+      }
+    })
+    .then(json => {
+      console.log(json)
+      console.log(json.total_results)
+      // getMovieDetails(json.results);
+    });
+    // `<div class="searchResults">Found 3 movies with the query "${inputEle.value}"</div>`s
+  
+  // event.preventDefault();
+};
 
 fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=5758c30522d298a69bc6c6c5d464365c`)
   .then(resp => {
