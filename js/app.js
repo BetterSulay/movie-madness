@@ -29,10 +29,10 @@ inputEle.addEventListener(`keyup`, function() {
 pagination.addEventListener(`click`, function(event) {
   if(event.target.id === `prev`) {
     page--;
-    searchOMDB(value);
+    searchMovies(page);
   } else if(event.target.id === `next`) {
     page++;
-    searchOMDB(value);
+    searchMovies(page);
   }
 })
 
@@ -47,6 +47,7 @@ function searchMovies(page) {
       }
     })
     .then(json => {
+      maxPage = Math.ceil(json.total_results / 20);
       document.querySelector(`.searchResults`).style.display = "block";
       document.querySelector(`.searchResults`).textContent = `Found ${json.total_results} movies with the query "${inputEle.value}"`
       getMovieDetails(json.results);
