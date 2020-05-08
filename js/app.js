@@ -1,17 +1,29 @@
-const buttons = document.querySelector(`nav ul`);
+// const buttons = document.querySelector(`nav ul`);
 
-buttons.addEventListener(`click`,  (event) => {
-  console.log(event.target.nodeName);
-  event.preventDefault();
-})
+// buttons.addEventListener(`click`,  (event) => {
+//   console.log(event.target.nodeName);
+//   event.preventDefault();
+// })
 
 const formEle = document.querySelector(`#search`);
 const inputEle = document.querySelector(`#search input`);
 
-inputEle.onkeyup = function(event){
+formEle.addEventListener(`submit`, function(event) {
+  if(inputEle.value !== ``) {
+    value = inputEle.value;
+    page = 1;
+    getTrendingMovies();
+  }
+  event.preventDefault();
+});
 
-  console.log('onkeyup ' + event.target.value);
-  fetch(`https://api.themoviedb.org/3/search/movie?api_key=5758c30522d298a69bc6c6c5d464365c&query=${event.target.value}`)
+inputEle.addEventListener(`keyup`, searchMovies)
+
+getTrendingMovies();
+
+function searchMovies() {
+  console.log(inputEle.value)
+  fetch(`https://api.themoviedb.org/3/search/movie?api_key=5758c30522d298a69bc6c6c5d464365c&query=${inputEle.value}&page=1`)
     .then(resp => {
       if(resp.ok) {
         return resp.json();
@@ -20,16 +32,14 @@ inputEle.onkeyup = function(event){
       }
     })
     .then(json => {
-      console.log(json)
-      console.log(json.total_results)
-      // getMovieDetails(json.results);
+      document.querySelector(`.searchResults`).style.display = "block";
+      document.querySelector(`.searchResults`).textContent = `Found ${json.total_results} movies with the query "${inputEle.value}"`
+      getMovieDetails(json.results);
     });
-    // `<div class="searchResults">Found 3 movies with the query "${inputEle.value}"</div>`s
-  
-  // event.preventDefault();
-};
+}
 
-fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=5758c30522d298a69bc6c6c5d464365c`)
+function getTrendingMovies() {
+  fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=5758c30522d298a69bc6c6c5d464365c`)
   .then(resp => {
     if(resp.ok) {
       return resp.json();
@@ -40,6 +50,7 @@ fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=5758c30522d298a6
   .then(json => {
     getMovieDetails(json.results);
   });
+}
 
 function getMovieDetails(movies) {
   fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=5758c30522d298a69bc6c6c5d464365c`)
@@ -51,6 +62,7 @@ function getMovieDetails(movies) {
       }
     })
     .then(json => {
+      document.querySelectorAll(`.titleList`).forEach((e) =>e.remove());
       json.genres.forEach(element => {
         const array = movies.filter(ele => ele.genre_ids.includes(element.id));
         if(array.length !== 0) {
@@ -96,4 +108,3 @@ function addTitledHtml(name, items) {
     </div>
   </div>`)
 }
-
