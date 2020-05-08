@@ -7,23 +7,38 @@
 
 const formEle = document.querySelector(`#search`);
 const inputEle = document.querySelector(`#search input`);
+const pagination = document.querySelector(`.pagination`);
+let page = 1;
+let maxPage = 1;
+
+getTrendingMovies();
 
 formEle.addEventListener(`submit`, function(event) {
   if(inputEle.value !== ``) {
     value = inputEle.value;
-    page = 1;
     getTrendingMovies();
   }
   event.preventDefault();
 });
 
-inputEle.addEventListener(`keyup`, searchMovies)
+inputEle.addEventListener(`keyup`, function() {
+  page = 1;
+  searchMovies(page);
+})
 
-getTrendingMovies();
+pagination.addEventListener(`click`, function(event) {
+  if(event.target.id === `prev`) {
+    page--;
+    searchOMDB(value);
+  } else if(event.target.id === `next`) {
+    page++;
+    searchOMDB(value);
+  }
+})
 
-function searchMovies() {
-  console.log(inputEle.value)
-  fetch(`https://api.themoviedb.org/3/search/movie?api_key=5758c30522d298a69bc6c6c5d464365c&query=${inputEle.value}&page=1`)
+function searchMovies(page) {
+  console.log(inputEle.value);
+  fetch(`https://api.themoviedb.org/3/search/movie?api_key=5758c30522d298a69bc6c6c5d464365c&query=${inputEle.value}&page=${page}`)
     .then(resp => {
       if(resp.ok) {
         return resp.json();
@@ -35,6 +50,7 @@ function searchMovies() {
       document.querySelector(`.searchResults`).style.display = "block";
       document.querySelector(`.searchResults`).textContent = `Found ${json.total_results} movies with the query "${inputEle.value}"`
       getMovieDetails(json.results);
+      checkPage(page);
     });
 }
 
@@ -107,4 +123,15 @@ function addTitledHtml(name, items) {
       </div>
     </div>
   </div>`)
+}
+
+function checkPage(page) {
+  if(page === 1) {
+    document.querySelector(`#prev`).style.display = "none";
+  } else if(page === maxPage) {
+    document.querySelector(`#next`).style.display = "none";
+  } else {
+    document.querySelector(`#prev`).style.display = "block";
+    document.querySelector(`#next`).style.display = "block";
+  }
 }

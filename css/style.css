@@ -260,3 +260,20 @@ p {
   width: 32px;
 }
 
+.pagination {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.pagination i {
+  padding: 0 15px;  
+}
+
+.pagination button {
+  background-color: unset;
+  border: 0;
+  margin-bottom: 20px;
+  color: #dc1a28;
+  font-size: 19px;
+  cursor: pointer;
+}
